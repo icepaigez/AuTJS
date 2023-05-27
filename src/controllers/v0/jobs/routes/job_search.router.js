@@ -9,16 +9,21 @@ const { get_job_prep } = require('./gpt');
 
 
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 	try {
 		if (Object.keys(req.body).length != 0) {
 			let resume = req.body.resume;
 			let role = req.body.role
-			console.log(role)
+			if (role.length > 0) {
+				let job_urls = await getJobLinks(role);
+				res.status(200).send({ "url":job_urls });
+			} else {
+				res.status(500).send({ 'error': 'something blew up' })
+			}
 		}
-		res.status(200).send('Data Received OK!');
 	} catch(err) {
 		console.err('something went wrong', err)
+		next(err)
 	}
 });
 
