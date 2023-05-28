@@ -18,11 +18,13 @@ router.post('/', async (req, res) => {
 			if (role.length > 0) {
 				let url_array = await getJobLinks(role);
 				if (url_array) {
-					let job_desc = await getJobData(url_array);
-					if (job_desc) {
-						console.log(job_desc)
-						// res.sendStatus(200);
-						res.status(200).send({ 'desc':job_desc })
+					let job_desc_array = await getJobData(url_array);
+					if (job_desc_array) {
+						let resume_array = await get_job_prep(job_desc_array, resume, role)
+						if (resume_array) {
+							console.log('from the router', resume_array)
+							res.status(200).send({ 'resumes':resume_array })
+						}
 					}
 				}
 			} else {
