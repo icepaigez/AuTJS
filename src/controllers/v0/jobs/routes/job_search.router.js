@@ -16,10 +16,14 @@ router.post('/', async (req, res) => {
 			let role = req.body.role;
 
 			if (role.length > 0) {
-				let data = await getJobLinks(role);
-				let urls = data.map(obj => obj.value)
-				if (urls) {
-					res.status(200).send({ 'urls':urls })
+				let url_array = await getJobLinks(role);
+				if (url_array) {
+					let job_desc = await getJobData(url_array);
+					if (job_desc) {
+						console.log(job_desc)
+						// res.sendStatus(200);
+						res.status(200).send({ 'desc':job_desc })
+					}
 				}
 			} else {
 				res.status(500).send({ 'error': 'empty role entered' })
@@ -27,7 +31,6 @@ router.post('/', async (req, res) => {
 		}
 	} catch(err) {
 		console.error('something went wrong', err)
-		next(err)
 	}
 });
 
